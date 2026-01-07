@@ -1,0 +1,158 @@
+[
+  {
+    "id": 1,
+    "title": "Inventory Photo Manager",
+    "category": "fullstack",
+    "description": "Built a web app for uploading and organizing product imagery across inventory items for operations teams.",
+    "overview": "Laravel-based workflow that lets users upload, tag, and associate images with specific SKUs so warehouse and sales teams always see the latest visuals.",
+    "role": "Systems Analyst / Fullstack Developer",
+    "challenges": [
+      "Ensuring consistent naming and SKU mapping across thousands of items",
+      "Keeping uploads performant while validating image size and format",
+      "Providing access controls so only authorized teams can edit product assets",
+      "Maintaining audit history for uploads and updates"
+    ],
+    "solution": [
+      "Implemented Laravel controllers & Form Requests for validated uploads, tagging, and SKU association",
+      "Blade-based UI with drag-and-drop upload, previews, and bulk tagging",
+      "Stored metadata in MySQL with constraints to prevent orphaned records",
+      "Policies & middleware for access control"
+    ],
+    "results": [
+      "Cut image lookup time for sales reps from minutes to seconds",
+      "Improved asset accuracy by enforcing validation and audit trails",
+      "Enabled non-technical users to manage imagery without engineering help"
+    ],
+    "technologies": ["Laravel", "PHP", "MySQL"]
+  },
+  {
+    "id": 2,
+    "title": "GPS Tracking Dashboard",
+    "category": "fullstack",
+    "description": "Delivered a dashboard to monitor van sales routes in near real-time for field operations visibility.",
+    "overview": "Laravel-backed API aggregates location pings and sales events into a single view so dispatchers can track routes, stops, and coverage.",
+    "role": "Systems Analyst / Fullstack Developer",
+    "challenges": [
+      "Normalizing GPS data from different mobile devices and formats",
+      "Rendering live route updates without overwhelming the browser",
+      "Providing filters for territory, driver, and time windows",
+      "Keeping data fresh while limiting backend load"
+    ],
+    "solution": [
+      "Laravel API Resources to serve location and route summaries with pagination",
+      "Blade/JS front-end with map overlays and route playback",
+      "Server-side caching for high-volume pings and filtered queries",
+      "Role-based views so sales, dispatch, and management see tailored data"
+    ],
+    "results": [
+      "Gave operations real-time visibility into daily routes and delays",
+      "Reduced support requests from field teams by surfacing self-serve data",
+      "Improved on-time deliveries by enabling proactive rerouting"
+    ],
+    "technologies": ["Laravel", "PHP", "JavaScript", "MySQL"]
+  },
+  {
+    "id": 3,
+    "title": "Invoice Workflow Tracker",
+    "category": "fullstack",
+    "description": "Developing a workflow app to track physical invoices from print to processing and document upload.",
+    "overview": "Laravel models each invoice state, tracks handoffs in the warehouse, and records when documents are uploaded for credit processing.",
+    "role": "Systems Analyst / Backend Developer",
+    "challenges": [
+      "Designing clear state transitions and preventing duplicate processing",
+      "Ensuring auditability for compliance and credit checks",
+      "Keeping the UI responsive while syncing status updates",
+      "Integrating with existing document repository"
+    ],
+    "solution": [
+      "Laravel Eloquent models with explicit workflow states and guards",
+      "Persisted invoice history in MySQL with audit tables for traceability",
+      "REST endpoints consumed by a lightweight JS front-end for real-time status"
+    ],
+    "results": [
+      "Centralized visibility into invoice lifecycle for warehouse and finance",
+      "Reduced duplicate handling by enforcing stateful workflows",
+      "Improved processing readiness by surfacing blockers earlier"
+    ],
+    "technologies": ["Laravel", "PHP", "MySQL", "REST"]
+  },
+  {
+    "id": 4,
+    "title": "Legacy User Service Migration",
+    "category": "backend",
+    "description": "Migrated a legacy user service to Spring Boot on Java 17, improving performance and reducing technical debt.",
+    "overview": "Rebuilt the service with modern Spring Boot patterns, tightened data access, and introduced caching for faster responses.",
+    "role": "Software Developer / Data Analyst",
+    "challenges": [
+      "Untangling tightly coupled legacy code and brittle SQL",
+      "Reducing database load from inefficient queries",
+      "Ensuring zero regression for downstream consumers",
+      "Establishing CI/CD for the modernized service"
+    ],
+    "solution": [
+      "Implemented Spring Boot (Java 17) service with layered architecture and DTO mapping",
+      "Optimized SQL queries and added indices to cut response times",
+      "Added caching for frequent reads and contract tests for API consumers",
+      "Update Jenkins pipelines for consistent deployments"
+    ],
+    "results": [
+      "Improved response times and stability for user-facing endpoints",
+      "Reduced production defects tied to the legacy service",
+      "Lowered operational overhead with automated builds and releases"
+    ],
+    "technologies": ["Spring Boot", "Java 17", "LDAP Server", "MSSQL", "Jenkins"]
+  },
+  {
+    "id": 5,
+    "title": "Data Quality & Insights",
+    "category": "backend",
+    "description": "Performed SQL-driven data analysis to clean, organize, and validate large datasets for banking stakeholders.",
+    "overview": "Partnered with data governance teams to improve accuracy and reporting efficiency by standardizing queries and validations.",
+    "role": "Data Analyst",
+    "challenges": [
+      "Identifying inconsistencies across multiple source systems",
+      "Improving data quality without interrupting reporting timelines",
+      "Documenting transformations for audit and handoff",
+      "Aligning stakeholders on validated metrics"
+    ],
+    "solution": [
+      "Wrote advanced SQL to cleanse, deduplicate, and validate key datasets",
+      "Produced reusable scripts and views to standardize reporting",
+      "Documented data lineage and validation steps for governance",
+      "Shared insights with business units to guide remediation"
+    ],
+    "results": [
+      "Improved data accuracy and reliability for downstream reports",
+      "Reduced manual cleanup by templating repeatable SQL workflows",
+      "Enabled faster decision-making with cleaner, trusted data"
+    ],
+    "technologies": ["SQL", "Python", "MSSQL", "Data Governance"]
+  },
+  {
+    "id": 6,
+    "title": "Lunch Management Application",
+    "category": "fullstack",
+    "description": "Web app to manage daily lunch orders, menus, and pickups with role-based access for staff and admins.",
+    "overview": "Built a fullstack solution to streamline lunch ordering: employees browse daily menus, place or edit orders before cutoff, and admins manage menus, inventory, and pickup reports.",
+    "role": "Fullstack Developer",
+    "challenges": [
+      "Coordinating order cutoffs and preventing late submissions",
+      "Avoiding double orders and handling edits/cancellations cleanly",
+      "Generating accurate pickup summaries for vendors",
+      "Providing a responsive UI for mobile users"
+    ],
+    "solution": [
+      "Laravel REST API with validation (Form Requests) and time-based guards for order windows",
+      "Relational schema in MySQL with constraints to prevent duplicates",
+      "Blade/JS UI with clear states for open/closed ordering and real-time feedback"
+    ],
+    "results": [
+      "Reduced manual tracking and errors in daily orders",
+      "Improved vendor coordination through exportable pickup summaries",
+      "Increased adoption due to fast, mobile-friendly interface"
+    ],
+    "technologies": ["Laravel", "PHP", "Filament PHP", "MySQL"],
+    "image": "images/lunch_list_dashboard.png",
+    "imageAlt": "Lunch management app dashboard screenshot"
+  }
+]

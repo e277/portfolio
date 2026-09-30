@@ -7,7 +7,10 @@ import { SiteFooter } from "@/components/site-footer";
 import { profile } from "@/content/profile";
 import "./globals.css";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://e277.github.io"),
   title: {
     default: `${profile.name} | ${profile.title}`,
     template: `%s | ${profile.name}`,
@@ -18,11 +21,10 @@ export const metadata: Metadata = {
     title: `${profile.name} | ${profile.title}`,
     description: profile.positioning,
     type: "website",
+    siteName: `${profile.name} · ${profile.nickname}`,
+    images: [{ url: `${basePath}/og.png`, width: 1200, height: 630, alt: `${profile.nickname} — ${profile.name}` }],
   },
-  twitter: { card: "summary" },
-  icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%234f46e5'/><text x='50' y='68' font-family='Arial,sans-serif' font-size='48' font-weight='700' text-anchor='middle' fill='%23ffffff'>EM</text></svg>",
-  },
+  twitter: { card: "summary_large_image", images: [`${basePath}/og.png`] },
 };
 
 export const viewport: Viewport = {

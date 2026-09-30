@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Logo } from "@/components/logo";
 import { GitHubIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { profile } from "@/content/profile";
@@ -14,8 +15,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <nav aria-label="Primary" className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="font-semibold tracking-tight">
-          {profile.name}
+        <Link href="/" className="group rounded-md" aria-label={`${profile.nickname} — ${profile.name}, home`}>
+          <Logo />
         </Link>
         <div className="flex items-center gap-1">
           <ul className="flex items-center">

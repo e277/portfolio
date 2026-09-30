@@ -13,7 +13,7 @@ Source: the six case studies in `projects.json`. Target role assumed: **senior b
 | Legacy User Service Migration | **Feature (lead)** | Only Java/Spring Boot story; migration + zero-regression + caching + CI is exactly what senior backend interviews probe. |
 | Invoice Workflow Tracker | **Feature** | State machine, duplicate-processing prevention, audit trail — reads as fintech-grade correctness work. Strongest "why" potential. |
 | GPS Tracking Dashboard | **Keep (3rd card)** | Ingestion of high-volume pings, normalization, caching under load — a real systems problem. Needs numbers. |
-| Lunch Management App | **Cut, or fold into Invoice Workflow** | Reads as CRUD. The only interesting part (order-cutoff guards + duplicate prevention) is the same idea as #3, told less convincingly. Keep the screenshot for the "About" page if you like. |
+| Lunch Management App | **Cut, or fold into Invoice Workflow** | Reads as CRUD. The only interesting part (order-cutoff guards + duplicate prevention) is the same idea as the Invoice Workflow Tracker, told less convincingly. Keep the screenshot for the "About" page if you like. |
 | Inventory Photo Manager | **Cut / demote to resume bullet** | Upload + tag + SKU mapping is standard. Revive only if there's a hard part (e.g., bulk-importing thousands of legacy images, storage costs). |
 | Data Quality & Insights | **Move to resume / About** | Analysis work, not a system you built. Keep it only if you turned it into a repeatable pipeline (scheduled validations, alerting) — then it becomes a backend story. |
 

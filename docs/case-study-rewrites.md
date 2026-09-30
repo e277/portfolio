@@ -1,5 +1,7 @@
 # Case Study Rewrites — Draft 1
 
+> **Status update:** the site now features Nexus-Grid (lead), Legacy User Service Migration (Westcoast), Invoice Workflow Tracker and GPS Tracking Dashboard (Facey Commodity). Lunch Management, Inventory Photo Manager and Data Quality & Insights were removed. The "Need from you" questions below still apply to the three work projects — the answers will fill their empty framework sections.
+
 Source: the six case studies in `projects.json`. Target role assumed: **senior backend / backend-leaning full-stack**, with fintech as the strongest fit given the banking and invoice/credit work. Tell me the actual target and I'll re-angle the hooks.
 
 **How to read this:** everything written as plain prose is drawn from your existing content. Anything in `[[double brackets]]` is a placeholder I could not fill without inventing facts. Each case study ends with a **⚠️ Need from you** list — answer those and I'll produce final copy and wire it into the site.

@@ -5,6 +5,7 @@ export const profile = {
     "I build the systems behind the screen — APIs, data pipelines and workflows that stay correct when the data is messy and the stakes are real.",
   about: [
     "I'm a backend-focused full-stack developer with 3+ years in the distribution industry — building REST APIs, operational workflows and data-heavy services for companies like Westcoast (UK) and Facey Commodity.",
+    "Every project here is one I built end to end as the sole developer: standalone services that consume internal APIs and feed results back into the systems a business already runs on.",
     "I care about correctness you can audit: explicit state, honest data, and systems that say what they don't know instead of guessing.",
   ],
   email: "ezramuir12@gmail.com",

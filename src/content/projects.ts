@@ -60,7 +60,7 @@ export const projects: Project[] = [
     context:
       "The Caribbean imports about 80% of its food. Built for the Future Caribbean Global AI Buildathon (Food Systems & Supply Chains track), Nexus-Grid asks a narrow question: which of those imports is a member state buying from outside the region while another member state already exports the same commodity into it? Constraints: only free, keyless public data so every figure is reproducible, no database server, it must work with or without an LLM key, and it must never invent a number.",
     role:
-      "Designed and built end to end — data layer, agent workflow, API, operator console and deployment. All 122 commits in the repository are mine.",
+      "Sole developer and individual contributor. I designed and built it end to end — data layer, agent workflow, API, operator console and deployment. All 122 commits in the repository are mine.",
     stack: [
       "Next.js 16",
       "React 19",
@@ -196,8 +196,9 @@ export const projects: Project[] = [
     category: "Backend",
     company: "Westcoast",
     context:
-      "Westcoast is a UK technology distributor. A legacy user service had tightly coupled code and brittle SQL that put heavy load on the database and caused production defects. The goal was to modernize it without breaking any downstream consumer.",
-    role: "Software Developer — rebuilt the service and its data access, and updated the delivery pipeline.",
+      "Westcoast is a UK technology distributor. A legacy user service had tightly coupled code and brittle SQL that put heavy load on the database and caused production defects. The goal was to rebuild it as a standalone service — consuming internal APIs and feeding internal systems — without breaking any downstream consumer.",
+    role:
+      "Sole developer and individual contributor. I designed and built the service end to end — architecture, data access, caching, contract tests and the Jenkins pipeline.",
     stack: ["Java 17", "Spring Boot", "MSSQL", "LDAP", "Jenkins", "JUnit", "Mockito"],
     challenges: [
       "Untangling tightly coupled legacy code and brittle SQL",
@@ -226,8 +227,9 @@ export const projects: Project[] = [
     status: "In development",
     company: "Facey Commodity",
     context:
-      "At Facey Commodity, a Caribbean distributor, physical invoices move from print, through warehouse handoffs, to document upload and credit processing. The app tracks each handoff and records when documents are uploaded, with the auditability that compliance and credit checks require.",
-    role: "Systems Analyst / Backend Developer",
+      "At Facey Commodity, a Caribbean distributor, physical invoices move from print, through warehouse handoffs, to document upload and credit processing. The app is a standalone system: it consumes internal APIs, tracks each handoff and document upload, and sends status back to internal systems — with the auditability that compliance and credit checks require.",
+    role:
+      "Sole developer and individual contributor. I designed the workflow model and schema and built the REST API and the front end.",
     stack: ["Laravel", "PHP", "MySQL", "REST", "JavaScript"],
     challenges: [
       "Designing clear state transitions and preventing duplicate processing",
@@ -254,8 +256,9 @@ export const projects: Project[] = [
     category: "Full Stack",
     company: "Facey Commodity",
     context:
-      "Facey Commodity runs van-sales routes across its distribution territory, and field operations had no live view of them. A Laravel API aggregates location pings and sales events into a single view so dispatchers can track routes, stops and coverage.",
-    role: "Systems Analyst / Fullstack Developer",
+      "Facey Commodity runs van-sales routes across its distribution territory, and field operations had no live view of them. This standalone app consumes internal APIs for location pings and sales events, aggregates them into a single view so dispatchers can track routes, stops and coverage, and sends route data back to internal systems.",
+    role:
+      "Sole developer and individual contributor. I built the API, the data processing and caching, and the map dashboard.",
     stack: ["Laravel", "PHP", "JavaScript", "MySQL"],
     challenges: [
       "Normalizing GPS data from different mobile devices and formats",

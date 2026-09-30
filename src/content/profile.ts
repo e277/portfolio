@@ -1,5 +1,6 @@
 export const profile = {
   name: "Ezra Muir",
+  nickname: "ungu",
   title: "Backend & Full-Stack Developer",
   positioning:
     "I build the systems behind the screen — APIs, data pipelines and workflows that stay correct when the data is messy and the stakes are real.",

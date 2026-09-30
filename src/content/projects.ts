@@ -29,7 +29,9 @@ export type Project = {
   category: "Full Stack" | "Backend" | "AI / Data Platform";
   /** Employer or programme the work was done for. */
   company?: string;
-  status?: "In development";
+  status?: "In development" | "On hold";
+  /** Ordered stages of the process the system tracks, rendered as a flow. */
+  flow?: { title: string; steps: string[] };
   context: string;
   role: string;
   stack: string[];
@@ -222,60 +224,87 @@ export const projects: Project[] = [
     slug: "invoice-workflow-tracker",
     title: "Invoice Workflow Tracker",
     hook:
-      "Modelling the invoice lifecycle as explicit states with guarded transitions and an audit trail, so an invoice can't be processed twice or lost between warehouse and finance.",
+      "Tracks every physical invoice from warehouse print to DocuShare upload by its ERP sequence number, so a missing invoice can be traced to the exact handoff where it went missing — even when one invoice spans several pages.",
     category: "Full Stack",
-    status: "In development",
+    status: "On hold",
     company: "Facey Commodity",
     context:
-      "At Facey Commodity, a Caribbean distributor, physical invoices move from print, through warehouse handoffs, to document upload and credit processing. The app is a standalone system: it consumes internal APIs, tracks each handoff and document upload, and sends status back to internal systems — with the auditability that compliance and credit checks require.",
+      "At Facey Commodity, a Caribbean distributor, every order raised in the ERP produces a paper invoice that changes hands several times before the credit team can file it: printed in the warehouse, packed with the order, carried by a delivery driver, returned to the warehouse, then passed to credit for recording and upload to DocuShare. Invoices went missing along the way and nobody could say where — a problem for credit, which needs the signed paper on record.",
     role:
-      "Sole developer and individual contributor. I designed the workflow model and schema and built the REST API and the front end.",
-    stack: ["Laravel", "PHP", "MySQL", "REST", "JavaScript"],
+      "Sole developer and individual contributor. I designed the workflow model and schema and built the Laravel application and its front end.",
+    stack: ["Laravel", "PHP", "MySQL", "REST", "JavaScript", "ERP integration", "DocuShare"],
+    flow: {
+      title: "The paper trail it tracks",
+      steps: [
+        "Order raised in ERP",
+        "Invoice printed in warehouse",
+        "Packed with order, handed to driver",
+        "Delivered; invoice returned to warehouse",
+        "Sent to credit team",
+        "Recorded and uploaded to DocuShare",
+      ],
+    },
     challenges: [
-      "Designing clear state transitions and preventing duplicate processing",
-      "Auditability for compliance and credit checks",
-      "Keeping the UI responsive while syncing status updates",
-      "Integrating with the existing document repository",
+      "Paper has no ID of its own — the system needs something stable to track across every handoff",
+      "One invoice can span several printed pages, so counting sheets of paper gives the wrong answer",
+      "Proving where an invoice went missing, not just that it did",
+      "Fitting around the ERP and DocuShare rather than replacing either",
     ],
     approach: [
-      "Eloquent models with explicit workflow states and transition guards",
-      "Invoice history persisted in MySQL with audit tables for traceability",
-      "REST endpoints consumed by a lightweight JavaScript front end for live status",
+      "Keyed every invoice on its ERP sequence number, pulled from the ERP, so each handoff is recorded against the invoice rather than the paper",
+      "Modelled the lifecycle as explicit states with guarded transitions in Laravel, so an invoice can only move to the next legal handoff",
+      "Recorded every transition — who, when, from which stage to which — in an append-only audit table in MySQL",
+      "REST endpoints and a lightweight JavaScript front end for scanning or confirming each handoff and seeing live status",
+    ],
+    hardParts: [
+      {
+        title: "An invoice is not a sheet of paper",
+        body: "Long orders print across multiple pages, so tracking pages would count one invoice as several — or flag a page as missing when the invoice was complete. Every page carries the invoice's ERP sequence number, so the system reconciles on that number: pages roll up to one invoice, and a gap in the sequence is what signals a genuinely missing invoice.",
+      },
     ],
     outcomes: [
-      "One place to see where every invoice is, for both warehouse and finance",
-      "Duplicate handling prevented by enforcing the workflow rather than relying on process",
-      "Blockers surfaced earlier, before they delay credit processing",
+      "Answers the question credit couldn't: which invoices are missing, and at which handoff they were last seen",
+      "Sequence-number reconciliation catches gaps that a page count would hide",
+      "A full audit trail of every handoff, for credit and compliance",
     ],
   },
   {
     slug: "gps-tracking-dashboard",
     title: "GPS Tracking Dashboard",
     hook:
-      "Turned GPS pings from mixed mobile devices into a near-real-time route dashboard, giving dispatch live visibility of van-sales routes.",
+      "A live map of every van in the fleet: reads GPS coordinates from van and tablet devices through the internal system API and plots them on OpenStreetMap, refreshing every 15 minutes.",
     category: "Full Stack",
     company: "Facey Commodity",
     context:
-      "Facey Commodity runs van-sales routes across its distribution territory, and field operations had no live view of them. This standalone app consumes internal APIs for location pings and sales events, aggregates them into a single view so dispatchers can track routes, stops and coverage, and sends route data back to internal systems.",
+      "Facey Commodity runs van-sales routes across its distribution territory, and dispatch had no single view of where the fleet was. Every van — tens of vehicles — carries GPS on the van itself and on the sales tablet, and the coordinates were already available through an internal system API but not visualized anywhere.",
     role:
-      "Sole developer and individual contributor. I built the API, the data processing and caching, and the map dashboard.",
-    stack: ["Laravel", "PHP", "JavaScript", "MySQL"],
+      "Sole developer and individual contributor. I built the Laravel application: the API integration, data processing and caching, and the map dashboard.",
+    stack: ["Laravel", "PHP", "JavaScript", "MySQL", "OpenStreetMap", "REST"],
+    metrics: {
+      title: "Fleet coverage",
+      items: [
+        { label: "Vans tracked", value: "All", note: "The whole van fleet — tens of vehicles" },
+        { label: "Position sources", value: "2", note: "GPS on the van and on the sales tablet" },
+        { label: "Map refresh", value: "15 min" },
+        { label: "Map tiles", value: "OSM", note: "OpenStreetMap — no per-request licensing cost" },
+      ],
+    },
     challenges: [
-      "Normalizing GPS data from different mobile devices and formats",
-      "Rendering live route updates without overwhelming the browser",
+      "Positions arrive from two kinds of device per van, in different formats",
+      "Keeping the map current without hammering the internal API",
       "Filtering by territory, driver and time window",
-      "Keeping data fresh while limiting backend load",
+      "Serving sales, dispatch and management from one dashboard",
     ],
     approach: [
-      "Laravel API Resources serving paginated location and route summaries",
-      "Map overlays with route playback in the front end",
-      "Server-side caching for high-volume pings and filtered queries",
-      "Role-based views so sales, dispatch and management each see what they need",
+      "Laravel service that reads latitude/longitude from the internal system API and normalizes van and tablet readings into one format",
+      "Map dashboard on OpenStreetMap, refreshed on a 15-minute cycle",
+      "Server-side caching so every viewer reads the same snapshot instead of each one calling the API",
+      "Filters and role-based views for sales, dispatch and management",
     ],
     outcomes: [
-      "Real-time visibility into daily routes and delays",
+      "One live view of where the whole fleet is, instead of phone calls to drivers",
       "Fewer support requests from field teams, through self-serve data",
-      "Proactive rerouting when routes fall behind",
+      "Dispatch can spot a van that has fallen behind and reroute",
     ],
   },
 ];

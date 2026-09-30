@@ -52,6 +52,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
 
   const toc = [
     ["context", "Context"],
+    project.flow && ["flow", "Process"],
     ["role", "Role"],
     project.architecture && ["architecture", "Architecture"],
     project.decisions && ["decisions", "Key decisions"],
@@ -128,6 +129,21 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           <Section id="context" title="Context">
             <p className="leading-relaxed text-muted-foreground">{project.context}</p>
           </Section>
+
+          {project.flow && (
+            <Section id="flow" title={project.flow.title}>
+              <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {project.flow.steps.map((step, i) => (
+                  <li key={step} className="flex items-start gap-3 rounded-xl border border-border bg-card p-4">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 font-mono text-xs font-semibold text-primary">
+                      {i + 1}
+                    </span>
+                    <span className="pt-0.5 text-sm">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </Section>
+          )}
 
           <Section id="role" title="My role & ownership">
             <p className="leading-relaxed text-muted-foreground">{project.role}</p>

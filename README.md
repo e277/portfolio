@@ -1,46 +1,53 @@
-# My Portfolio (Vanilla HTML/CSS/JS)
+# Ezra Muir — Portfolio
 
-A modern, static portfolio that loads project data from `projects.json` and renders it with vanilla JavaScript. Each project opens a case study modal with a shareable link.
-
-## Prerequisites
-- Node.js 16+ (for using quick local servers via `npx`)
-
-## Project structure
-```
-index.html              # Main portfolio page with project cards
-css/styles.css          # Styles (includes case study page styling)
-js/main.js              # Main logic, fetches projects.json and renders cards
-projects.json           # Project data (case studies)
-images/                 # Place images/logos here
-```
-
-## How it works
-1. **Main page (index.html):** Hero, skills, project cards, and contact links.
-2. **Project cards:** Rendered from `projects.json`, filterable by category (all/backend/fullstack) with per-category counts.
-3. **Case studies:** Clicking a card opens a modal with the overview, challenges, solution, results, and technologies.
-4. **Deep links:** Each case study has a shareable URL (`#project-<id>`, e.g. `index.html#project-6`), and the browser back button closes it.
-5. **Theme:** Follows the visitor's OS light/dark preference until they pick one with the toggle; the choice is remembered.
+Personal portfolio and case studies, built with **Next.js 16 (App Router, static export)**, **Tailwind CSS v4** and **shadcn/ui-style components** (Radix + CVA), deployed to **GitHub Pages**.
 
 ## Running locally
+
+```bash
+npm install
+npm run dev        # http://localhost:3000
+npm run build      # static site in ./out
+npm run typecheck
 ```
-npx serve .
-# or
-python3 -m http.server 8000
+
+## Project structure
+
+```
+src/
+  app/
+    layout.tsx               # Fonts, theme provider, header/footer, metadata
+    page.tsx                 # Home: hero, case study cards, about/skills, contact
+    projects/[slug]/page.tsx # One statically generated page per case study
+    globals.css              # Design tokens (light/dark) and Tailwind setup
+  components/
+    ui/                      # shadcn-style primitives: Button, Badge, Card
+    project-card.tsx, site-header.tsx, site-footer.tsx, theme-toggle.tsx
+  content/
+    projects.ts              # All case study content (typed)
+    profile.ts               # Name, positioning, about, links, skills
+public/images/               # Diagrams and screenshots
 ```
 
-## Adding a project
-Add an entry to `projects.json`:
+## Adding or editing a case study
 
-| Field | Required | Notes |
-| --- | --- | --- |
-| `id` | yes | Unique number; used in the `#project-<id>` URL |
-| `title`, `description`, `overview` | yes | Plain text (HTML is escaped) |
-| `category` | yes | `fullstack` or `backend` |
-| `challenges`, `solution`, `results`, `technologies` | yes | Arrays of strings |
-| `role` | no | Defaults to "Full Stack Developer" |
-| `image`, `imageAlt` | no | Screenshot path (e.g. `images/foo.png`); shown in the modal and as the card background |
+Everything lives in `src/content/projects.ts`. Each project needs `slug`, `title`, `hook` (one sentence: problem + impact), `category`, `context`, `role` and `stack`. Every other section is optional and only rendered when present:
 
-## Notes
-- The site must be served over HTTP for `fetch('./projects.json')` to work; opening `index.html` via `file://` will block the request.
-- Caching is disabled for the JSON request (`cache: 'no-cache'`), so edits to `projects.json` show on refresh.
-- Accessibility: keyboard-operable cards and filters, focus-trapped dialog with focus return, skip link, visible focus styles, and `prefers-reduced-motion` support.
+| Field | Section on the case study page |
+| --- | --- |
+| `architecture` (+ `diagrams`) | Architecture, with diagrams |
+| `decisions` | Key decisions & trade-offs (with the rejected alternative) |
+| `challenges`, `approach` | Challenges / Approach |
+| `hardParts` | The hard part |
+| `implementation` | Implementation details |
+| `testing`, `operations` | Testing & quality / Deployment & operations |
+| `metrics`, `outcomes` | Headline numbers / Outcomes (or "Expected impact" when `status` is set) |
+| `retrospective` | What I'd do differently |
+
+The first project in the array is shown as the featured card.
+
+## Deployment
+
+`.github/workflows/deploy.yml` builds and publishes the site on every push to `main`.
+
+One-time setup: in the repository go to **Settings → Pages → Build and deployment** and set **Source** to **GitHub Actions**. The site will be served at `https://e277.github.io/portfolio/`. The base path is supplied by the workflow, so a custom domain works without code changes.

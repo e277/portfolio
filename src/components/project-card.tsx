@@ -10,7 +10,7 @@ export function ProjectCard({ project, featured = false }: { project: Project; f
   return (
     <article
       className={cn(
-        "group relative flex flex-col rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300",
+        "group relative flex cursor-pointer flex-col rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300",
         "hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5",
         "has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-ring",
         featured && "lg:col-span-3 md:p-8"
@@ -33,8 +33,9 @@ export function ProjectCard({ project, featured = false }: { project: Project; f
         {featured && <Badge>Featured</Badge>}
         {project.status && <Badge variant="outline">{project.status}</Badge>}
       </div>
-      <h3 className={cn("relative mt-3 font-semibold tracking-tight", featured ? "text-2xl" : "text-lg")}>
-        <Link href={`/projects/${project.slug}/`} className="outline-none after:absolute after:inset-0 after:rounded-xl">
+      {/* The title link's ::after stretches over the whole card, making all of it clickable */}
+      <h3 className={cn("mt-3 font-semibold tracking-tight", featured ? "text-2xl" : "text-lg")}>
+        <Link href={`/projects/${project.slug}/`} className="outline-none after:absolute after:inset-0 after:z-10 after:rounded-xl after:content-['']">
           {project.title}
         </Link>
       </h3>

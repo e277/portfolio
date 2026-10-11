@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { GitHubIcon } from "@/components/icons";
@@ -98,6 +98,13 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
               </li>
             ))}
           </ul>
+          {project.live && (
+            <Button size="sm" asChild>
+              <a href={project.live} target="_blank" rel="noopener noreferrer">
+                <ExternalLink /> Live demo
+              </a>
+            </Button>
+          )}
           {project.repo && (
             <Button variant="outline" size="sm" asChild>
               <a href={project.repo} target="_blank" rel="noopener noreferrer">

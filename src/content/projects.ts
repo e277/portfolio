@@ -36,6 +36,8 @@ export type Project = {
   role: string;
   stack: string[];
   repo?: string;
+  /** Public URL of the running app. */
+  live?: string;
   /** Short badges for the homepage card; defaults to the first few of `stack`. */
   tags?: string[];
   architecture?: { summary: string[]; diagrams?: Diagram[] };
@@ -60,30 +62,34 @@ export const projects: Project[] = [
     category: "AI / Data Platform",
     company: "Caribbean AI Buildathon",
     context:
-      "The Caribbean imports about 80% of its food. Built for the Future Caribbean Global AI Buildathon (Food Systems & Supply Chains track), Nexus-Grid asks a narrow question: which of those imports is a member state buying from outside the region while another member state already exports the same commodity into it? Constraints: only free, keyless public data so every figure is reproducible, no database server, it must work with or without an LLM key, and it must never invent a number.",
+      "The Caribbean imports about 80% of its food. Built for the Future Caribbean Global AI Buildathon (Food Systems & Supply Chains track), Nexus-Grid asks a narrow question: which of those imports is a member state buying from outside the region while another member state already exports the same commodity into it? Constraints: only free, keyless public data so every figure is reproducible, it must work with or without an LLM key or a database, and it must never invent a number.",
     role:
-      "Sole developer and individual contributor. I designed and built it end to end — data layer, agent workflow, API, operator console and deployment. All 122 commits in the repository are mine.",
+      "Sole developer and individual contributor. I designed and built it end to end — data layer, agent workflow, API, operator console, authentication and deployment.",
     stack: [
       "Next.js 16",
       "React 19",
       "TypeScript",
       "LangGraph",
-      "SQLite",
+      "PostgreSQL + Drizzle",
+      "Auth.js (SSO)",
       "Tailwind + shadcn/ui",
       "Recharts",
       "Vitest",
       "Docker",
-      "Nginx + systemd",
+      "Vercel",
       "GitHub Actions",
     ],
-    tags: ["TypeScript", "Next.js", "LangGraph", "SQLite"],
+    tags: ["TypeScript", "Next.js", "LangGraph", "PostgreSQL"],
     repo: "https://github.com/e277/Nexus-Grid",
+    live: "https://nexus-grid-ten.vercel.app/",
     architecture: {
       summary: [
         "One Next.js process. Six publishers (UN Comtrade, World Bank, ISRIC SoilGrids, NASA POWER, Open-Meteo, NOAA) are fetched concurrently, each behind its own cache with a provenance record.",
         "A derived read model (the projection) turns those snapshots into per-state profiles, substitution opportunities and supplier→importer lanes. Nothing in it is entered by hand; it is rebuilt on the next fetch.",
         "Specialist agents (supply, demand, logistics, agronomy, climate, planting) interpret the projection under a supervisor. A LangGraph workflow runs perceive → assess → recommend → plan → approval gate → execute → monitor → recover for each gap, streaming every node to the console over server-sent events.",
-        "Approved plans are posted to a real operator dashboard (an OpenClaw gateway). Rejected or escalated plans are never sent.",
+        "Approved plans are posted to a real operator dashboard (an OpenClaw gateway) when self-hosted; on Vercel they are reported as simulated dispatches. Rejected or escalated plans are never sent.",
+        "Sign-in goes through the organisation's own identity provider (Microsoft Entra ID, Okta or any OIDC, Google, GitHub) via Auth.js, with viewer, operator and admin roles re-checked on every request. Integrations use service-account tokens stored only as hashes.",
+        "With a database configured, the platform's own records — an append-only audit trail, the agents' decision log, access grants and paused runs — live in Postgres so every instance shares them.",
       ],
       diagrams: [
         {
@@ -105,14 +111,19 @@ export const projects: Project[] = [
         rejected: "Keeping the Python service — two runtimes and a contract to keep in sync for a single-team project.",
       },
       {
-        title: "No database or cache server",
-        why: "The platform owns almost no data: every figure is derived from public sources and recomputed on the next fetch. Per-source in-process caches with provenance were enough, and Redis was removed.",
-        rejected: "Redis and a relational database — infrastructure to operate for data the system doesn't own.",
+        title: "A database is optional, not required",
+        why: "Every figure is derived from public sources and recomputed on the next fetch, so the platform owns very little: its audit trail, decision log, access grants and paused runs. Those move into Postgres when DATABASE_URL is set; without it they stay in memory and the app still runs. Redis was removed early.",
+        rejected: "Making a database or cache server a prerequisite for running the app at all.",
       },
       {
-        title: "LangGraph + a SQLite checkpointer for the approval gate",
-        why: "The workflow started on a ~220-line hand-rolled graph runtime. It worked until a paused approval had to outlive the process — a human takes human time, and an in-memory gate dies on the next deploy. LangGraph's checkpointer is exactly that abstraction, so the node bodies stayed as pure functions and only the wiring moved.",
+        title: "LangGraph with a durable checkpointer for the approval gate",
+        why: "The workflow started on a ~220-line hand-rolled graph runtime. It worked until a paused approval had to outlive the process — a human takes human time, and an in-memory gate dies on the next deploy. LangGraph's checkpointer is exactly that abstraction (SQLite on one server, Postgres across many), so the node bodies stayed as pure functions and only the wiring moved.",
         rejected: "Growing a second, home-made implementation of durable execution.",
+      },
+      {
+        title: "Identity belongs to the organisation's provider",
+        why: "Nexus-Grid stores no passwords and keeps no user table. Sign-in is delegated to the provider the organisation already runs, sessions are encrypted cookies, and anyone not explicitly allowed is refused.",
+        rejected: "A local user and password store — more to secure, and one more account for every operator to manage.",
       },
       {
         title: "Free, keyless sources only",
@@ -138,8 +149,12 @@ export const projects: Project[] = [
         body: "The logistics agent was given both the ranked supplier shortlist and the raw lane list sorted by value, and reported that a nearer supplier had been ranked below a farther one — which it hadn't. The fix was to pass the shortlist instead of the raw lanes, not alongside them.",
       },
       {
+        title: "Serverless broke the approval gate",
+        body: "On Vercel each request can land on a different, short-lived instance. A paused run held in one instance's memory could not be resumed by an operator's decision that reached another. The fix was a Postgres data layer: paused runs, the audit trail, the decision log and access grants move into the database, so any instance can resume any run.",
+      },
+      {
         title: "GitHub Pages was never going to work",
-        body: "The app uses Node.js API routes and process-local state, so it can't be hosted as a static site. The Pages workflow was replaced with a VM deploy: build a standalone bundle, ship it, atomically swap it into place and verify it through health endpoints.",
+        body: "The app uses Node.js API routes and server-side state, so it can't be hosted as a static site. Deployment went from a VM with an atomic-swap release, to Docker Compose over SSH, to Vercel — with the self-hosted stack kept for durable gates and real dashboard delivery.",
       },
     ],
     implementation: [
@@ -157,19 +172,23 @@ export const projects: Project[] = [
       },
       {
         title: "One wrapper for every route",
-        body: "Rate limiting, Prometheus metrics, audit logging and error mapping live in a single route wrapper, so every endpoint gets them by construction.",
+        body: "Authentication, role checks, rate limiting, Prometheus metrics, audit logging and error mapping live in a single route wrapper, so every endpoint gets them by construction.",
+      },
+      {
+        title: "An audit trail that can't be rewritten",
+        body: "The audit table is append-only, enforced by a database trigger rather than by application code, and records the signed-in person or service account behind every state change.",
       },
     ],
     testing: [
-      "50+ Vitest tests across the coordination graph, projection, caching, supplier matching and naming layers.",
-      "CI runs typecheck and a production build on every push.",
+      "79 Vitest tests across the coordination graph, projection, caching, supplier matching, auth and naming layers.",
+      "CI runs on every push and pull request against a real Postgres 16: typecheck, a check that migrations match the schema, the migrations applied twice to prove they're idempotent, tests, then a production build.",
       "Data sources are verified against the live endpoints rather than mocked in CI — a known gap (see below).",
     ],
     operations: [
-      "Docker Compose locally (app plus gateway); plain `npm run dev` works without Docker.",
-      "Production: a Debian 12 VM. GitHub Actions builds the Next.js standalone bundle, ships it over SSH, atomically swaps it into place and verifies /api/health and /api/health/db.",
-      "systemd service behind Nginx with TLS; separate service and deploy users, with sudo limited to the deploy script.",
-      "Prometheus metrics endpoint, rate limiting on every route, and an audit trail of every agent action — including scans that found nothing.",
+      "Production on Vercel: every push to main deploys, and every pull request gets a preview URL. Postgres (Neon or Vercel Postgres) holds shared state; migrations apply on first use.",
+      "Self-hosted option: the Docker Compose stack behind Caddy on a single Linux server, for durable gates and real dashboard delivery — the OpenClaw gateway needs loopback access that Vercel can't provide.",
+      "Security headers (CSP, HSTS) on every response; rate limiting on every route; Prometheus metrics restricted to admins.",
+      "Health probes report which store and checkpointer are in use, and the audit trail covers every agent action — including scans that found nothing.",
     ],
     metrics: {
       title: "What it finds (latest settled UN Comtrade year, 15 CARICOM states)",
@@ -185,9 +204,9 @@ export const projects: Project[] = [
       ],
     },
     retrospective: [
-      "Persist more from the start. Paused runs survive a restart, but source caches, agent memory and the audit trail are still in-memory and reset with the process.",
+      "Design for more than one instance from day one. Process-local state was fine on a single server, but moving to Vercel meant retrofitting Postgres for paused runs and the audit trail — and source caches are still per instance.",
       "Record fixtures for each publisher so CI catches an upstream format change instead of relying on live checks.",
-      "Decide the hosting model before the first deploy workflow — the Pages attempt cost a round trip that the architecture already ruled out.",
+      "Decide the hosting model before the first deploy workflow. Going from Pages to a VM to Compose to Vercel cost several round trips that the architecture could have settled up front.",
     ],
   },
   {

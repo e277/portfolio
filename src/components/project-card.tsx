@@ -32,6 +32,22 @@ export function ProjectCard({ project, featured = false }: { project: Project; f
         )}
         {featured && <Badge>Featured</Badge>}
         {project.status && <Badge variant="outline">{project.status}</Badge>}
+        {project.live && (
+          // Sits above the card's stretched link so it opens the app, not the case study
+          <a
+            href={project.live}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative z-20 ml-auto inline-flex items-center gap-1.5 rounded-md border border-border bg-background/60 px-2 py-0.5 font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <span className="relative flex size-1.5" aria-hidden="true">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-highlight opacity-75 motion-reduce:hidden" />
+              <span className="relative inline-flex size-1.5 rounded-full bg-highlight" />
+            </span>
+            Live demo
+            <span className="sr-only">of {project.title} (opens in a new tab)</span>
+          </a>
+        )}
       </div>
       {/* The title link's ::after stretches over the whole card, making all of it clickable */}
       <h3 className={cn("mt-3 font-semibold tracking-tight", featured ? "text-2xl" : "text-lg")}>

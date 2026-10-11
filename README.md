@@ -43,6 +43,7 @@ Everything lives in `src/content/projects.ts`. Each project needs `slug`, `title
 | `testing`, `operations` | Testing & quality / Deployment & operations |
 | `metrics`, `outcomes` | Headline numbers / Outcomes (or "Expected impact" when `status` is set) |
 | `retrospective` | What I'd do differently |
+| `live`, `repo` | "Live demo" and "View source" buttons (`live` also adds a link on the homepage card) |
 
 The first project in the array is shown as the featured card.
 
